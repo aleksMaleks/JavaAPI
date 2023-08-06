@@ -26,6 +26,7 @@ public class Ex9 {
             body.put("login", "super_admin");
             body.put("password", pas);
 
+
             Response response1 = RestAssured
                     .given()
                     .body(body)
