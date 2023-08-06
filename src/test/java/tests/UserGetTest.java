@@ -33,7 +33,7 @@ public class UserGetTest extends BaseTestCase {
         authData.put("password", "1234");
 
         Response responseGetAuth = apiCoreRequests
-                .makePostRequest("https://playground.learnqa.ru/api/user/login", authData);
+                .makePostRequestWithResponse("https://playground.learnqa.ru/api/user/login", authData);
 
         String header = getHeader(responseGetAuth, "x-csrf-token");
         String cookie = getCookie(responseGetAuth, "auth_sid");
@@ -54,7 +54,7 @@ public class UserGetTest extends BaseTestCase {
         authData.put("password", "1234");
 
         Response responseGetAuth = apiCoreRequests
-                .makePostRequest("https://playground.learnqa.ru/api/user/login", authData);
+                .makePostRequestWithResponse("https://playground.learnqa.ru/api/user/login", authData);
 
         String header = getHeader(responseGetAuth, "x-csrf-token");
         String cookie = getCookie(responseGetAuth, "auth_sid");
