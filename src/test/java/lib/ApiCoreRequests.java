@@ -21,7 +21,15 @@ public class ApiCoreRequests {
                 .andReturn();
     }
 
-    @Step("Make a GET-request with with auth cookie only")
+    @Step("Make a GET-request without token and auth cookie")
+    public Response makeGetRequest(String url) {
+        return given()
+                .filter(new AllureRestAssured())
+                .get(url)
+                .andReturn();
+    }
+
+    @Step("Make a GET-request with auth cookie only")
     public Response makeGetRequestWithCookie(String url, String cookie) {
         return given()
                 .filter(new AllureRestAssured())
