@@ -3,15 +3,18 @@ package tests;
 import io.qameta.allure.Description;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBody;
 import lib.Assertions;
 import lib.BaseTestCase;
 import lib.DataGenerator;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 class UserEditTest extends BaseTestCase {
 
@@ -50,7 +53,7 @@ class UserEditTest extends BaseTestCase {
     }
 
     @Description("This test edits just created user")
-    @DisplayName("Test positive create user")
+    @DisplayName("Test positive edit user")
     @Test
     void testEditJustCreatedUser() {
         generateUser();
@@ -67,8 +70,8 @@ class UserEditTest extends BaseTestCase {
         Assertions.assertJsonByName(responseUserData, "firstName", newName);
     }
 
-    @Description("This test edits just created user")
-    @DisplayName("Test positive create user")
+    @Description("This test edits wit not authorized user")
+    @DisplayName("Test negative edit user")
     @Test
     void testEditWithNotAuthorizedUser() {
         generateUser();
@@ -84,8 +87,8 @@ class UserEditTest extends BaseTestCase {
         Assertions.assertResponseTextEquals(responseEditUserData, "Auth token not supplied");
     }
 
-    @Description("This test edits just created user")
-    @DisplayName("Test positive create user")
+    @Description("This test edits with another user")
+    @DisplayName("Test negative edit user")
     @Test
     void testEditWithAnotherUser() {
         generateUser();
@@ -96,8 +99,6 @@ class UserEditTest extends BaseTestCase {
         String cookie1 = cookie;
         Response responseUserData1 = apiCoreRequests.makeGetRequest(
                 "https://playground.learnqa.ru/api/user/" + userId1, header1, cookie1);
-//        ResponseBody responseBody1 = responseUserData1.getBody();
-//        String firstName1 = responseBody1.jsonPath().getString("firstName");
         responseUserData1.prettyPrint();
 
         generateUser();
@@ -128,6 +129,40 @@ class UserEditTest extends BaseTestCase {
         Assertions.assertResponseCodeNotEquals(responseEditUserData, 200);
     }
 
+    @Description("This test edits with email without @")
+    @DisplayName("Test negative edit user")
+    @Test
+    void testEditWithEmailWithoutAt() {
+        generateUser();
+        loginUser();
 
+        String newEmail = "vinexample.com";
+        String url = "https://playground.learnqa.ru/api/user/" + userId;
+        editData.put("email", newEmail);
+        Response responseEditUserData = editUser(url, editData);
 
+        Document document = Jsoup.parse(responseEditUserData.asString());
+        String paragraphElement = document.body().text();
+
+        System.out.println(responseEditUserData.statusCode());
+        Assertions.assertResponseCodeEquals(responseEditUserData, 400);
+        assertEquals(paragraphElement, "Invalid email format");
+    }
+
+    @Description("This test edits with a very short firstName - one character")
+    @DisplayName("Test negative edit user")
+    @Test
+    void testEditWithFirstName() {
+        generateUser();
+        loginUser();
+
+        String newFirstName = "v";
+        String url = "https://playground.learnqa.ru/api/user/" + userId;
+        editData.put("firstName", newFirstName);
+        Response responseEditUserData = editUser(url, editData);
+
+        Assertions.assertResponseCodeEquals(responseEditUserData, 400);
+        Assertions.assertJsonByName(
+                responseEditUserData, "error", "Too short value for field firstName");
+    }
 }
