@@ -29,7 +29,11 @@ public class DataGenerator {
         String[] keys = {"email", "password", "username", "firstName", "lastName"};
         for (String key : keys) {
             if (nonDefaultValues.containsKey(key)) {
-                userData.put(key, nonDefaultValues.get(key));
+                if (nonDefaultValues.get(key) == null) {
+                    userData.remove(key);
+                } else {
+                    userData.put(key, nonDefaultValues.get(key));
+                }
             } else {
                 userData.put(key, defaultValues.get(key));
             }

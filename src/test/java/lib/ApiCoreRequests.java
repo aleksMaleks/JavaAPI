@@ -15,7 +15,7 @@ public class ApiCoreRequests {
     public Response makeGetRequest(String url, String token, String cookie) {
         return given()
                 .filter(new AllureRestAssured())
-                .header(new Header("x-csrs-token", token))
+                .header(new Header("x-csrf-token", token))
                 .cookie("auth_sid", cookie)
                 .get(url)
                 .andReturn();
@@ -40,10 +40,10 @@ public class ApiCoreRequests {
     }
 
     @Step("Make a POST-request")
-    public Response makePostRequest(String url, Map<String, String> authData) {
+    public Response makePostRequest(String url, Map<String, String> userData) {
         return given()
                 .filter(new AllureRestAssured())
-                .body(authData)
+                .body(userData)
                 .post(url)
                 .andReturn();
     }
