@@ -125,6 +125,6 @@ public class UserDeleteTest extends BaseTestCase {
         String paragraphElement = document.body().text();
 
         assertEquals(paragraphElement, "User not found");
-        Assertions.assertResponseCodeEquals(responseDeletedUserData, 200);
+        Assertions.assertResponseCodeNotEquals(responseDeletedUserData, 200);
     }
 }
