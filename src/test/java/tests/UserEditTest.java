@@ -1,6 +1,6 @@
 package tests;
 
-import io.qameta.allure.Description;
+import io.qameta.allure.*;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import lib.Assertions;
@@ -87,6 +87,9 @@ class UserEditTest extends BaseTestCase {
         Assertions.assertResponseTextEquals(responseEditUserData, "Auth token not supplied");
     }
 
+    @Link("https://example.org")
+    @TmsLink("test-1")
+    @Severity(SeverityLevel.CRITICAL)
     @Description("This test edits with another user")
     @DisplayName("Test negative edit user")
     @Test
